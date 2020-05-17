@@ -36,8 +36,8 @@ class CustomUser(AbstractUser):
     # username = models.CharField(max_length=10, unique=True)
     # email = None
 
-    is_student = models.BooleanField(default=False)
-    is_teacher = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=False, verbose_name="Uczeń")
+    is_teacher = models.BooleanField(default=False, verbose_name="Nauczyciel")
 
     objects = CustomUserManager()
 
@@ -78,8 +78,8 @@ class Nauczyciel(models.Model):
     nazwisko = models.CharField(max_length=40)
     pesel = models.BigIntegerField(db_column='PESEL')  # Field name made lowercase.
     adres = models.CharField(max_length=30)
-    email = models.CharField(max_length=40)
     numer_telefonu = models.CharField(max_length=13)
+    # email = models.CharField(max_length=40)
 
     def __str__(self):
         return " ".join([self.imie, self.nazwisko])
@@ -137,8 +137,8 @@ class Uczen(models.Model):
     nazwisko = models.CharField(max_length=40)
     data_urodzenia = models.CharField(max_length=11)
     adres = models.CharField(max_length=30)
-    email = models.CharField(max_length=40)
-    klasa = models.OneToOneField(Klasa, on_delete=models.CASCADE)
+    # email = models.CharField(max_length=40)
+    klasa = models.OneToOneField(Klasa, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Klasa")
     # klasa = models.CharField(max_length=10, blank=True, null=True)
 
     class Meta:

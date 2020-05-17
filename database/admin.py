@@ -9,6 +9,11 @@ from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 
 
+class UczenAdmin(admin.ModelAdmin):
+    model = Uczen
+    # fielsets = (None, {'fields': ('user', 'nazwa')},)
+    list_display = ['imie', 'nazwisko', 'klasa_id']
+
 
 class KlasaAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
@@ -55,7 +60,7 @@ class PrzedmiotAdmin(admin.ModelAdmin):
 #     form = UserProfileForm
 ########################
 class CustomUserAdmin(UserAdmin):
-    add_form = CustomUserCreationForm
+    # add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
     list_display = ('username', 'is_staff', 'is_active', 'is_teacher', 'is_student',)
@@ -84,6 +89,7 @@ admin.site.register(Klasa, KlasaAdmin)
 
 admin.site.unregister(Group)
 admin.site.unregister(CustomUser)
-admin.site.register(Uczen)
+admin.site.register(Uczen, UczenAdmin)
+# admin.site.register(Uczen)
 admin.site.register(Nauczyciel)
 admin.site.register(CustomUser, CustomUserAdmin)
