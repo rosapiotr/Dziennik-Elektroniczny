@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{% static 'teachers/main.css' %}">
+
+  {% if title %}
+  <title>Nauczyciel - {{ title }}</title>
+  {% else %}
+  <title>Nauczyciel</title>
+  {% endif %}
+</head>
+
+<body>
+  <ul class="nav justify-content-center bg-primary navbar-light navbar-static-top" id="topnav">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'teacher-add-ann' %}">Dodaj ogłoszenie</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Plan zajęć</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Link</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'teacher-logout' %}">Wyloguj się</a>
+    </li>
+  </ul>
+
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="container">
+      <span class="text-muted">Dziennik Elektroniczny</span>
+    </div>
+  </footer>
+
+</body>
+
+</html>

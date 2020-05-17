@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dziennik Elektroniczny</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{% static 'database/main.css' %}">
+    </head>
+    <body>
+        <div class="row no-gutters">
+            <div class="col no-gutters">
+                <div class="leftside d-flex justify-content-center align-items-center">
+                        <button onclick="window.location.href = '/students/login';" type="button" class="btn btn-success leftside"><h2>Portal dla uczniów</h2></button>
+                </div>
+
+            </div>
+            <div class="col no-gutters">
+                <div class="rightside d-flex justify-content-center align-items-center">
+                        <button onclick="window.location.href = '/teachers/login';" type="button" class="btn btn-primary leftside"><h2>Portal dla nauczycieli</h2></button>
+
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>

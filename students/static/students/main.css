@@ -1,0 +1,28 @@
+#topnav .navbar-nav {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#topnav li > a {
+  color: rgb(0, 0, 0);
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+#topnav li > a:hover {
+  transition: background-color .2s, color .2s;
+  background-color: rgb(131, 124, 22);
+  color: rgb(32, 20, 139);
+}
+
+
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30px; /* Set the fixed height of the footer here */
+  line-height:25px; /* Vertically center the text there */
+  background-color: #f5f5f5e7;
+  text-align: center;
+}

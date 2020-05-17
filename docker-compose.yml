@@ -1,0 +1,35 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    entrypoint: ['/entrypoint.sh', '--default-authentication-plugin=mysql_native_password']
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: '7bn1910fn1f'
+      MYSQL_ROOT_PASSWORD: 'security'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+      - ./mysqlconf.cnf:/etc/mysql/conf.d/custom.cnf
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  web:
+    build: .
+    command: bash -c "sleep 30s && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    # links:
+    #   - db:db
+volumes:
+  my-db:
+# sudo docker-compose down --volumes --remove-orphans
+# sudo docker exec -it bazy_db_1 bash
+# mysql -u admin -p db
