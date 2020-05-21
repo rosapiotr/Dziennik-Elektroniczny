@@ -1,0 +1,58 @@
+{% extends "teachers/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h2>Plan zajęć</h2>
+    <hr/>
+
+    <div class="row">
+
+        <div class="col-sm border-left border-right">
+            {% for z in zajecia %}
+            {% if "Pon" in z.dzien or "pon" in z.dzien %}
+            <p>{{ z.id_przedmiotu.nazwa }}<br/>{{ z.godzina }}, {{ z.sala }}</p>
+            <hr/>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="col-sm border-right">
+            {% for z in zajecia %}
+            {% if "Wt" in z.dzien or "wt" in z.dzien %}
+            <p>{{ z.id_przedmiotu.nazwa }}<br/>{{ z.godzina }}, {{ z.sala }}</p>
+            <hr/>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="col-sm border-right">
+            {% for z in zajecia %}
+            {% if "Śr" in z.dzien or "Sr" in z.dzien or "sr" in z.dzien or "śr" in z.dzien or "oda" in z.dzien %}
+            <p>{{ z.id_przedmiotu.nazwa }}<br/>{{ z.godzina }}, {{ z.sala }}</p>
+            <hr/>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="col-sm border-right">
+            {% for z in zajecia %}
+            {% if "Czw" in z.dzien or "czw" in z.dzien %}
+            <p>{{ z.id_przedmiotu.nazwa }}<br/>{{ z.godzina }}, {{ z.sala }}</p>
+            <hr/>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="col-sm border-right">
+            {% for z in zajecia %}
+            {% if "Pia" in z.dzien or "Pią" in z.dzien or "pia" in z.dzien or "pią" in z.dzien %}
+            <p>{{ z.id_przedmiotu.nazwa }}<br/>{{ z.godzina }}, {{ z.sala }}</p>
+            <hr/>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

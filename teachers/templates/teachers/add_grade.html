@@ -1,0 +1,61 @@
+{% extends "teachers/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="content-section">
+    <div class="col-8"></div>
+    {% if messages %}
+    {% for msg in messages %}
+
+    <div class="alert col-8 alert-{{msg.level_tag}}" role="alert">
+        {{ msg.message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <form method="POST" action="/teachers/zapisz_ocene/">
+        {% csrf_token %}
+
+            <legend class="border-bottom mb-4">Dodaj ocenę</legend>
+            
+            <label for="subject">Wybierz przedmiot z listy:</label>
+            <select class="form-control selectpicker" data-live-search="true" search="true" id="subject" name="subject">
+                {% for i in przedmioty %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+            <br> <br>
+            <label for="student">Wybierz ucznia z listy:</label>
+            <select class="form-control selectpicker" data-live-search="true" search="true" id="student" name="student">
+                <option value="" selected disabled hidden>Wybierz ucznia</option>
+                {% for uczen in uczniowie %}
+                    <option value="{{ uczen }}">{{ uczen }}</option>
+                {% endfor %}
+            </select>
+            <br> <br>
+            <label for="grade">Ocena:</label>
+            <br>
+            <select class="form-control selectpicker col-1" data-live-search="true" search="true" id="grade" name="grade">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5" selected>5</option>
+            </select>
+            <br> <br>
+            <label for="weight">Waga:</label>
+            <br>
+            <select class="form-control selectpicker col-1" data-live-search="true" search="true" id="weight" name="weight">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
+        </fieldset>
+        <br><br>
+        <label for="description">Szczegóły:</label>
+        <textarea class="form-control" rows="2" id="description" name="description"></textarea>
+        <br>
+        <div class="form-group">
+            <button class="btn btn-outline-info btn-primary" type="submit">Dodaj ocenę</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

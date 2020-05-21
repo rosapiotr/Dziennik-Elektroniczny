@@ -21,10 +21,10 @@
                 <div class="col-4"></div>
                 {% if messages %}
                 {% for msg in messages %}
-                
-                                <div class="alert col-4 alert-{{msg.level_tag}}" role="alert">
-                                        {{ msg.message }}
-                                </div>
+
+                <div class="alert col-4 alert-{{msg.level_tag}}" role="alert">
+                        {{ msg.message }}
+                </div>
                 {% endfor %}
                 {% endif %}
         </div>

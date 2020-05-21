@@ -1,16 +1,34 @@
 {% extends "teachers/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Blog Post</legend>
-                {{ form|crispy }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Post</button>
-            </div>
-        </form>
+<div class="content-section">
+    <div class="col-8"></div>
+    {% if messages %}
+    {% for msg in messages %}
+
+    <div class="alert col-8 alert-{{msg.level_tag}}" role="alert">
+        {{ msg.message }}
     </div>
+    {% endfor %}
+    {% endif %}
+    <form method="POST" action="/teachers/zapisz_ogloszenie/">
+        {% csrf_token %}
+
+            <legend class="border-bottom mb-4">Dodaj ogłoszenie</legend>
+            
+            <label for="subject">Wybierz przedmiot z listy:</label>
+            <select class="form-control selectpicker" data-live-search="true" search="true" id="subject" name="subject">
+                {% for i in przedmioty %}
+                <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+            <br />
+            <label for="content">Treść ogłoszenia:</label>
+            <textarea class="form-control" rows="5" id="content" name="content"></textarea>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn btn-outline-info btn-primary" type="submit">Dodaj ogłoszenie</button>
+        </div>
+    </form>
+</div>
 {% endblock content %}

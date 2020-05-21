@@ -126,7 +126,7 @@ class Przedmiot(models.Model):
         verbose_name_plural = "Przedmioty"
 
     def __str__(self):
-        return " ".join([self.nazwa, str(self.id)])
+        return " ".join([self.nazwa, "(" + str(self.id) + ")"])
 
 
 class Uczen(models.Model):
@@ -147,7 +147,7 @@ class Uczen(models.Model):
         verbose_name_plural = "Uczniowie"
     
     def __str__(self):
-        return " ".join([self.imie, self.nazwisko])
+        return " ".join([self.imie, self.nazwisko, self.klasa.nazwa])
 
 
 class Zajecia(models.Model):
