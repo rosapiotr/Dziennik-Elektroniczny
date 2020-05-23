@@ -1,17 +1,19 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
-from .forms import UserLoginForm
-from django.contrib.auth import authenticate
+from .forms import UserLoginForm, ProfileUpdateForm, UserUpdateForm #, ChangePasswordForm
+from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth import login as login_user
 from django.contrib.auth import logout as logout_user
 from django.contrib import messages
 
+from django.forms import ValidationError
 ###
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DetailView
 from database.models import Ogloszenie, Nauczyciel, Przedmiot, Zajecia, Uczen, Ocena
+from django.contrib.auth.forms import PasswordChangeForm
 
 class AnnotationCreateView(LoginRequiredMixin, CreateView):
     model = Ogloszenie
@@ -24,6 +26,9 @@ class AnnotationCreateView(LoginRequiredMixin, CreateView):
 ###
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('teacher-plan')
+
     next = request.GET.get('next')
     form = UserLoginForm(request.POST or None)
     
@@ -36,7 +41,7 @@ def login(request):
         if next:
             response = redirect(next)
         else:
-            response = redirect('teacher-add-ann')
+            response = redirect('teacher-plan')
         # response.set_cookie('user-data', 1, 60*20) # 20 minutes expiry
         return response
 
@@ -55,10 +60,11 @@ def logout(request):
 
 @login_required(login_url="/teachers/login")
 def add_ann(request):
-    if request.user.is_authenticated:
-        id = request.user.id
-    nauczyciel = Nauczyciel.objects.filter(user_id=id).values()
-    id_n = nauczyciel[0]['id']
+    # id = request.user.id
+    # nauczyciel = Nauczyciel.objects.filter(user_id=id).values()
+    nauczyciel = request.user.nauczyciel
+    id_n = nauczyciel.id
+    # id_n = nauczyciel[0]['id']
     przedmioty = Przedmiot.objects.filter(id_nauczyciela=id_n)
     # przedmioty = Przedmiot.objects.filter(id_nauczyciela=id_n).values()
     # lista_przedmiotow = []
@@ -74,13 +80,14 @@ def add_ann(request):
 
 @login_required(login_url="/teachers/login")
 def post_ann(request):
-    id = request.user.id
-    nauczyciel = Nauczyciel.objects.filter(user_id=id)
-    id_nauczyciela = nauczyciel[0].id
+    # id = request.user.id
+    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    nauczyciel = request.user.nauczyciel
+    id_nauczyciela = nauczyciel.id
     id_przedmiotu = request.POST.get("subject", "").split()[-1][1:-1]
     przedmiot = Przedmiot.objects.filter(id=id_przedmiotu)
     tresc = request.POST.get("content", "")
-    o = Ogloszenie(id_nauczyciela=nauczyciel[0], id_przedmiotu=przedmiot[0], tresc=tresc)
+    o = Ogloszenie(id_nauczyciela=nauczyciel, id_przedmiotu=przedmiot[0], tresc=tresc)
     o.save()
     
     response = redirect('teacher-add-ann')
@@ -89,8 +96,9 @@ def post_ann(request):
 
 @login_required(login_url="/teachers/login")
 def add_grade(request):
-    id = request.user.id
-    nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    # id = request.user.id
+    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    nauczyciel = request.user.nauczyciel
     id_nauczyciela = nauczyciel.id
 
     przedmioty = Przedmiot.objects.filter(id_nauczyciela=nauczyciel)
@@ -118,8 +126,9 @@ def add_grade(request):
 
 @login_required(login_url="/teachers/login")
 def post_grade(request):
-    id = request.user.id
-    nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    # id = request.user.id
+    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    nauczyciel = request.user.nauczyciel
     id_nauczyciela = nauczyciel.id
     id_przedmiotu = request.POST.get("subject", "").split()[-1][1:-1]
     przedmiot = Przedmiot.objects.filter(id=id_przedmiotu)[0]
@@ -142,26 +151,84 @@ def post_grade(request):
 
 @login_required(login_url="/teachers/login")
 def plan(request):
-    id = request.user.id
-    nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    # id = request.user.id
+    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    nauczyciel = request.user.nauczyciel
     przedmioty = Przedmiot.objects.filter(id_nauczyciela=nauczyciel)
     zajecia = Zajecia.objects.filter(id_przedmiotu__in=przedmioty)
     print(zajecia)
-    # zajecia = []
-    # for p in przedmioty:
-    #     if Zajecia.objects.filter(id_przedmiotu=p).exists():
-    #         zajecia.append(Zajecia.objects.filter(id_przedmiotu=p))
     
     context = {
         'title': "Plan zajęć",
         'zajecia': zajecia
-    }    
-    
-    # print(zajecia)
-    # klasa = uczen[0]['klasa_id']
-    # klasa = uczen[0].keys()
-    # print(klasa)
-
-    # zajecia = Zajecia.objects.filter(id_klasy=klasa).order_by('godzina')
+    }
 
     return render(request, "teachers/plan.html", context)
+
+@login_required(login_url="/teachers/login")
+def ogloszenia(request):
+    nauczyciel = request.user.nauczyciel
+    # id = request.user.id
+    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    ogloszenia = Ogloszenie.objects.filter(id_nauczyciela=nauczyciel)
+    print(ogloszenia)
+    
+    context = {
+        'title': "Moje ogłoszenia",
+        'ogloszenia': ogloszenia
+    }
+
+    return render(request, "teachers/ann.html", context)
+
+@login_required(login_url="/teachers/login")
+def profile(request):
+    # id = request.user.id
+    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
+    user = request.user
+    nauczyciel = request.user.nauczyciel
+
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=user)
+        p_form = ProfileUpdateForm(request.POST, instance=nauczyciel)
+        
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+            messages.success(request, f'Pomyślnie zaktualizowano profil!')
+            return redirect('teacher-profile')
+
+    u_form = UserUpdateForm(instance=user)
+    p_form = ProfileUpdateForm(instance=nauczyciel)
+    
+    context = {
+        'title': "Profil",
+        'p_form': p_form,
+        'u_form': u_form
+    }
+
+    return render(request, "teachers/profile.html", context)
+
+@login_required(login_url="/teachers/login")
+def change_password(request):
+    user = request.user
+    nauczyciel = request.user.nauczyciel
+
+    if request.method == 'POST':
+        password_form = PasswordChangeForm(data=request.POST, user=user)
+        
+        if password_form.is_valid():
+            password_form.save()
+            update_session_auth_hash(request, password_form.user)
+            messages.success(request, f'Pomyślnie zmieniono hasło!')
+            return redirect('teacher-profile')
+        else:
+            messages.success(request, f'Podano złe hasło, lub hasła nie są identyczne')
+    
+    password_form = PasswordChangeForm(user=user)
+
+    context = {
+        'title': "Zmień hasło",
+        'password_form': password_form,
+    }
+
+    return render(request, "teachers/change_password.html", context)

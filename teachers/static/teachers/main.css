@@ -15,8 +15,18 @@
   color: rgb(216, 204, 35);
 }
 
-.body {
-  padding-bottom: 50px;
+body {
+  padding-bottom: 30px;
+}
+
+.mojlink:hover {
+  color: rgb(216, 204, 35);
+}
+
+.mojlink {
+  color: rgb(255, 255, 255);
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 .footer {

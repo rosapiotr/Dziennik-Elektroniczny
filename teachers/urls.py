@@ -11,4 +11,7 @@ urlpatterns = [
     path('dodaj_ocene/', views.add_grade, name='teacher-add-grade'),
     path('zapisz_ocene/', views.post_grade, name='teacher-post-grade'),
     path('plan/', views.plan, name='teacher-plan'),
+    path('ogloszenia/', views.ogloszenia, name='teacher-ann'),
+    path('profil/', views.profile, name='teacher-profile'),
+    path('zmien_haslo/', views.change_password, name='teacher-change-pass'),
 ]

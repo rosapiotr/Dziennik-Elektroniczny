@@ -10,6 +10,9 @@ from django.contrib.auth import logout as logout_user
 from django.contrib import messages
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('student-plan')
+
     next = request.GET.get('next')
     form = UserLoginForm(request.POST or None)
     

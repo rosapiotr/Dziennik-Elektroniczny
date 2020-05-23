@@ -21,10 +21,16 @@
       <a class="nav-link" href="{% url 'teacher-add-ann' %}">Dodaj ogłoszenie</a>
     </li>
     <li class="nav-item">
+      <a class="nav-link" href="{% url 'teacher-ann' %}">Moje ogłoszenia</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link" href="{% url 'teacher-plan' %}">Plan zajęć</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'teacher-add-grade' %}">Dodaj ocenę</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'teacher-profile' %}">Profil</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'teacher-logout' %}">Wyloguj się</a>
@@ -35,6 +41,7 @@
     <div class="row">
       <div class="col-md-1"></div>
       <div class="col-md-10">
+        <br>
         {% block content %}{% endblock %}
       </div>
     </div>

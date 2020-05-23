@@ -1,0 +1,25 @@
+{% extends "teachers/base.html" %}
+{% block content %}
+<div class="content-section">
+    <div class="col-8"></div>
+    {% if messages %}
+    {% for msg in messages %}
+
+    <div class="alert col-8 alert-{{msg.level_tag}}" role="alert">
+        {{ msg.message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <h2>Moje ogłoszenia</h2>
+    <hr/>
+    {% for o in ogloszenia %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">{{o.id_przedmiotu.nazwa}} - {{o.tresc}}</div>
+        <!-- <div class="panel-body">
+        </div> -->
+      </div>
+    {% endfor %}
+
+</div>
+{% endblock content %}
