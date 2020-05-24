@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from datetime import date
 
 from .forms import UserLoginForm, ProfileUpdateForm, UserUpdateForm #, ChangePasswordForm
 from django.contrib.auth import authenticate, update_session_auth_hash
@@ -25,8 +26,32 @@ class AnnotationCreateView(LoginRequiredMixin, CreateView):
 
 ###
 
+def teacher_required(function):
+    def wrapper(request, *args, **kwargs):
+        decorated_view_func = login_required(request)
+        if not decorated_view_func.user.is_authenticated:
+            return redirect('teacher-login')
+        try:
+            teacher = request.user.nauczyciel
+            return function(request, *args, **kwargs)
+        except:
+            logout_user(request)
+            messages.add_message(request, messages.SUCCESS, 'Nie masz dostępu do tej części serwisu')
+            return redirect('teacher-login')
+
+    wrapper.__doc__ = function.__doc__
+    wrapper.__name__ = function.__name__
+    return wrapper
+
+def check_if_teacher(request):
+    try:
+        request.user.nauczyciel
+        return True
+    except:
+        return False
+
 def login(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and check_if_teacher(request):
         return redirect('teacher-plan')
 
     next = request.GET.get('next')
@@ -42,7 +67,6 @@ def login(request):
             response = redirect(next)
         else:
             response = redirect('teacher-plan')
-        # response.set_cookie('user-data', 1, 60*20) # 20 minutes expiry
         return response
 
     context = {
@@ -54,23 +78,17 @@ def login(request):
 def logout(request):
     logout_user(request)
     response = redirect('teacher-login')
-    # response.delete_cookie('user-data')
     messages.add_message(request, messages.SUCCESS, 'Wylogowano!')
     return response
 
-@login_required(login_url="/teachers/login")
+# @login_required(login_url="/teachers/login")
+@teacher_required
 def add_ann(request):
     # id = request.user.id
     # nauczyciel = Nauczyciel.objects.filter(user_id=id).values()
     nauczyciel = request.user.nauczyciel
     id_n = nauczyciel.id
-    # id_n = nauczyciel[0]['id']
     przedmioty = Przedmiot.objects.filter(id_nauczyciela=id_n)
-    # przedmioty = Przedmiot.objects.filter(id_nauczyciela=id_n).values()
-    # lista_przedmiotow = []
-    # for p in przedmioty:
-    #     # print(p['id'], p['nazwa'])
-    #     lista_przedmiotow.append(str(p['nazwa']) + " " + str(p['id']))
 
     context = {
         'title': "Dodaj ogłoszenie",
@@ -78,7 +96,7 @@ def add_ann(request):
     }
     return render(request, 'teachers/add_ann.html', context)
 
-@login_required(login_url="/teachers/login")
+@teacher_required
 def post_ann(request):
     # id = request.user.id
     # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
@@ -86,7 +104,7 @@ def post_ann(request):
     id_nauczyciela = nauczyciel.id
     id_przedmiotu = request.POST.get("subject", "").split()[-1][1:-1]
     przedmiot = Przedmiot.objects.filter(id=id_przedmiotu)
-    tresc = request.POST.get("content", "")
+    tresc = "(" + str(date.today()) + ") " + request.POST.get("content", "")
     o = Ogloszenie(id_nauczyciela=nauczyciel, id_przedmiotu=przedmiot[0], tresc=tresc)
     o.save()
     
@@ -94,7 +112,7 @@ def post_ann(request):
     messages.add_message(request, messages.SUCCESS, 'Dodano ogłoszenie')
     return response
 
-@login_required(login_url="/teachers/login")
+@teacher_required
 def add_grade(request):
     # id = request.user.id
     # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
@@ -103,18 +121,10 @@ def add_grade(request):
 
     przedmioty = Przedmiot.objects.filter(id_nauczyciela=nauczyciel)
     zajecia = Zajecia.objects.filter(id_przedmiotu__in=przedmioty)
-    # zajecia = []
-    # for p in przedmioty:
-    #     zajecia.append(Zajecia.objects.filter(id_przedmiotu=p.id))
     klasy = []
     for z in zajecia:
-        # for zz in z:
         klasy.append(z.id_klasy)
     uczniowie = Uczen.objects.filter(klasa__in=klasy)
-    # uczniowie = []
-    # for k in klasy:
-    #     for kk in klasy:
-    #         uczniowie.append(Uczen.objects.filter(klasa=kk.id))
 
     context = {
         'title': "Dodaj ocenę",
@@ -124,7 +134,7 @@ def add_grade(request):
 
     return render(request, "teachers/add_grade.html", context)
 
-@login_required(login_url="/teachers/login")
+@teacher_required
 def post_grade(request):
     # id = request.user.id
     # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
@@ -149,7 +159,7 @@ def post_grade(request):
 
     return response
 
-@login_required(login_url="/teachers/login")
+@teacher_required
 def plan(request):
     # id = request.user.id
     # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
@@ -165,7 +175,7 @@ def plan(request):
 
     return render(request, "teachers/plan.html", context)
 
-@login_required(login_url="/teachers/login")
+@teacher_required
 def ogloszenia(request):
     nauczyciel = request.user.nauczyciel
     # id = request.user.id
@@ -175,12 +185,12 @@ def ogloszenia(request):
     
     context = {
         'title': "Moje ogłoszenia",
-        'ogloszenia': ogloszenia
+        'ogloszenia': ogloszenia[::-1]
     }
 
     return render(request, "teachers/ann.html", context)
 
-@login_required(login_url="/teachers/login")
+@teacher_required
 def profile(request):
     # id = request.user.id
     # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
@@ -208,7 +218,7 @@ def profile(request):
 
     return render(request, "teachers/profile.html", context)
 
-@login_required(login_url="/teachers/login")
+@teacher_required
 def change_password(request):
     user = request.user
     nauczyciel = request.user.nauczyciel

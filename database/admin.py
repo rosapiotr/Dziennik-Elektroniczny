@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from .models import Uczen, Nauczyciel, CustomUser, Przedmiot, Klasa, Zajecia
+from .models import Uczen, Nauczyciel, CustomUser, Przedmiot, Klasa, Zajecia, Ogloszenie
 
 # from django.forms import ModelForm
 
@@ -93,3 +93,4 @@ admin.site.register(Uczen, UczenAdmin)
 # admin.site.register(Uczen)
 admin.site.register(Nauczyciel)
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Ogloszenie)

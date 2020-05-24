@@ -1,4 +1,4 @@
-{% extends "teachers/base.html" %}
+{% extends "students/base.html" %}
 {% block content %}
 <div class="content-section">
     <div class="col-8"></div>
@@ -11,11 +11,13 @@
     {% endfor %}
     {% endif %}
 
-    <h2>Moje ogłoszenia</h2>
+    <h2>{{ przedmiot }} - Prowadzący: {{ przedmiot.id_nauczyciela }}</h2>
     <hr/>
-    {% for o in ogloszenia %}
-    <div class="panel panel-primary">
-        <div class="panel-heading">{{o.tresc | slice:"0:12"}} {{o.id_przedmiotu.nazwa}} - {{o.tresc | slice:"12:"}}</div>
+    <h3>Oceny</h3>
+    <br>
+    {% for o in oceny %}
+    <div class="panel panel-success">
+        <div class="panel-heading">{{ o.ocena }} - (Waga: {{ o.waga }}) {{ o.wynik }}</div>
         <!-- <div class="panel-body">
         </div> -->
       </div>
