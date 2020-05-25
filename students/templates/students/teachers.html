@@ -11,18 +11,21 @@
     {% endfor %}
     {% endif %}
 
-    <h2>{{ przedmiot }} - Prowadzący: {{ przedmiot.id_nauczyciela }}</h2>
+    <h2>Znajdź nauczyciela</h2>
     <hr/>
-    <h3>Oceny</h3>
-    <br>
-    {% for o in oceny %}
+    <form method="POST" action="/students/nauczyciele/">
+        {% csrf_token %}
+        <input class="form-control" type="text" placeholder="Wyszukaj po imieniu lub nazwisku" aria-label="Search", name="nauczyciel">
+    </form>
+    
+    <hr/>
+    {% for n in nauczyciele %}
     <div class="panel panel-success">
-        <div class="panel-heading">{{ o.ocena }} - (Waga: {{ o.waga }}) {{ o.wynik }}</div>
+        <div class="panel-heading"><a href="{% url 'student-teacher-details'  n.id %}">{{ n }}</a></div>
         <!-- <div class="panel-body">
         </div> -->
       </div>
     {% endfor %}
-    <h4>Średnia: {{ srednia }} </h4>
 
 </div>
 {% endblock content %}

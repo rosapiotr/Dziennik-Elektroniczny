@@ -11,18 +11,20 @@
     {% endfor %}
     {% endif %}
 
-    <h2>{{ przedmiot }} - Prowadzący: {{ przedmiot.id_nauczyciela }}</h2>
+    <h2>{{ nauczyciel }}</h2>
     <hr/>
-    <h3>Oceny</h3>
+    <h3>Prowadzone przedmioty</h3>
     <br>
-    {% for o in oceny %}
+    {% for p in przedmioty %}
     <div class="panel panel-success">
-        <div class="panel-heading">{{ o.ocena }} - (Waga: {{ o.waga }}) {{ o.wynik }}</div>
-        <!-- <div class="panel-body">
-        </div> -->
+        <div class="panel-heading">{{ p }}</div>
       </div>
     {% endfor %}
-    <h4>Średnia: {{ srednia }} </h4>
+    <hr>
+    <h3>Dane kontaktowe</h3>
+    <h4>Adres email: {{ nauczyciel.user.email }}</h4>
+    <h4>Numer telefonu: {{ nauczyciel.numer_telefonu }}</h4>
+    
 
 </div>
 {% endblock content %}

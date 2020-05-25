@@ -1,9 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from .models import Uczen, Nauczyciel, CustomUser, Przedmiot, Klasa, Zajecia, Ogloszenie
-
-# from django.forms import ModelForm
-
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
@@ -11,7 +8,6 @@ from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 class UczenAdmin(admin.ModelAdmin):
     model = Uczen
-    # fielsets = (None, {'fields': ('user', 'nazwa')},)
     list_display = ['imie', 'nazwisko', 'klasa_id']
 
 
@@ -34,33 +30,10 @@ class PrzedmiotAdmin(admin.ModelAdmin):
     model = Przedmiot
     list_display = ['nazwa', 'id_nauczyciela', 'id']
     list_filter = ['nazwa', 'id_nauczyciela', 'id']
-    # fieldsets = (
-    #     (None, {'fields': ('nazwa', 'id_nauczyciela')}),
-    # )
     search_fields = ('nazwa',)
     ordering = ('nazwa',)
 
-    # add_form = PrzedmiotCreationForm
-    # list_display = ['nazwa', 'id_nauczyciela']
-
-
-######################
-# class UserProfileForm(ModelForm):
-#     def __init__(self, *args, **kwargs):
-#         super(UserProfileForm, self).__init__(*args, **kwargs)
-#         # if self.instance.pk is None:
-#         #     self.empty_permitted = False # Here
-
-#     class Meta:
-#         model = Nauczyciel
-
-
-# class UserProfileInline(admin.TabularInline):         
-#     model = UserProfile                               
-#     form = UserProfileForm
-########################
 class CustomUserAdmin(UserAdmin):
-    # add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
     list_display = ('username', 'is_staff', 'is_active', 'is_teacher', 'is_student',)
@@ -90,7 +63,6 @@ admin.site.register(Klasa, KlasaAdmin)
 admin.site.unregister(Group)
 admin.site.unregister(CustomUser)
 admin.site.register(Uczen, UczenAdmin)
-# admin.site.register(Uczen)
 admin.site.register(Nauczyciel)
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Ogloszenie)

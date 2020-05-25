@@ -1,6 +1,6 @@
-#####
 from django import forms
 from django.contrib.auth import authenticate
+from database.models import CustomUser
 
 class UserLoginForm(forms.Form):
     username = forms.CharField(label='Nazwa użytkownika')
@@ -18,5 +18,7 @@ class UserLoginForm(forms.Form):
                 raise forms.ValidationError('Użytkownik nie jest aktywny')
         return super(UserLoginForm, self).clean(*args, **kwargs)
 
-
-#####
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['email']

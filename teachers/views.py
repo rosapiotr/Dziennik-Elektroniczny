@@ -1,30 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from datetime import date
-
-from .forms import UserLoginForm, ProfileUpdateForm, UserUpdateForm #, ChangePasswordForm
 from django.contrib.auth import authenticate, update_session_auth_hash
 from django.contrib.auth import login as login_user
 from django.contrib.auth import logout as logout_user
 from django.contrib import messages
-
-from django.forms import ValidationError
-###
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, DetailView
-from database.models import Ogloszenie, Nauczyciel, Przedmiot, Zajecia, Uczen, Ocena
 from django.contrib.auth.forms import PasswordChangeForm
 
-class AnnotationCreateView(LoginRequiredMixin, CreateView):
-    model = Ogloszenie
-    template_name = 'teachers/add_ann.html'
-    fields = ['id_przedmiotu', 'tresc']
-
-# class AnnotationDetailView(LoginRequiredMixin, DetailView):
-#     model = Ogloszenie
-
-###
+from database.models import Ogloszenie, Nauczyciel, Przedmiot, Zajecia, Uczen, Ocena
+from .forms import UserLoginForm, ProfileUpdateForm, UserUpdateForm
+from datetime import date
 
 def teacher_required(function):
     def wrapper(request, *args, **kwargs):
@@ -84,8 +68,6 @@ def logout(request):
 # @login_required(login_url="/teachers/login")
 @teacher_required
 def add_ann(request):
-    # id = request.user.id
-    # nauczyciel = Nauczyciel.objects.filter(user_id=id).values()
     nauczyciel = request.user.nauczyciel
     id_n = nauczyciel.id
     przedmioty = Przedmiot.objects.filter(id_nauczyciela=id_n)
@@ -98,8 +80,6 @@ def add_ann(request):
 
 @teacher_required
 def post_ann(request):
-    # id = request.user.id
-    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
     nauczyciel = request.user.nauczyciel
     id_nauczyciela = nauczyciel.id
     id_przedmiotu = request.POST.get("subject", "").split()[-1][1:-1]
@@ -114,8 +94,6 @@ def post_ann(request):
 
 @teacher_required
 def add_grade(request):
-    # id = request.user.id
-    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
     nauczyciel = request.user.nauczyciel
     id_nauczyciela = nauczyciel.id
 
@@ -136,27 +114,26 @@ def add_grade(request):
 
 @teacher_required
 def post_grade(request):
-    # id = request.user.id
-    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
-    nauczyciel = request.user.nauczyciel
-    id_nauczyciela = nauczyciel.id
-    id_przedmiotu = request.POST.get("subject", "").split()[-1][1:-1]
-    przedmiot = Przedmiot.objects.filter(id=id_przedmiotu)[0]
-    uczen = request.POST.get("student", "").split()
-    id_ucznia = Uczen.objects.filter(imie=uczen[0], nazwisko=uczen[1])[0]
-    ocena = int(request.POST.get("grade", ""))
-    waga = int(request.POST.get("weight", ""))
-    wynik = request.POST.get("description", "")
-
     response = redirect('teacher-add-grade')
+    if request.method == 'POST':
+        nauczyciel = request.user.nauczyciel
+        id_nauczyciela = nauczyciel.id
+        id_przedmiotu = request.POST.get("subject", "").split()[-1][1:-1]
+        przedmiot = Przedmiot.objects.filter(id=id_przedmiotu)[0]
+        uczen = request.POST.get("student", "").split()
+        id_ucznia = Uczen.objects.filter(imie=uczen[0], nazwisko=uczen[1])[0]
+        ocena = int(request.POST.get("grade", ""))
+        waga = int(request.POST.get("weight", ""))
+        wynik = request.POST.get("description", "")
 
-    if Zajecia.objects.filter(id_klasy=id_ucznia.klasa, id_przedmiotu=przedmiot).exists():
-        o = Ocena(id_ucznia=id_ucznia, id_przedmiotu=przedmiot, ocena=ocena, waga=waga, wynik=wynik)
-        o.save()
-        messages.add_message(request, messages.SUCCESS, 'Dodano ocenę')
-    else:
-        messages.add_message(request, messages.SUCCESS, 'BŁĄD. Uczeń {0} nie uczęszcza na ten przedmiot ({1})'.format(id_ucznia, przedmiot))    
+        if Zajecia.objects.filter(id_klasy=id_ucznia.klasa, id_przedmiotu=przedmiot).exists():
+            o = Ocena(id_ucznia=id_ucznia, id_przedmiotu=przedmiot, ocena=ocena, waga=waga, wynik=wynik)
+            o.save()
+            messages.add_message(request, messages.SUCCESS, 'Dodano ocenę')
+        else:
+            messages.add_message(request, messages.SUCCESS, 'BŁĄD. Uczeń {0} nie uczęszcza na ten przedmiot ({1})'.format(id_ucznia, przedmiot))    
 
+        return response
     return response
 
 @teacher_required

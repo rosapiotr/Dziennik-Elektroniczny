@@ -1,4 +1,3 @@
-#####
 from django import forms
 from django.contrib.auth import authenticate
 
@@ -20,8 +19,6 @@ class UserLoginForm(forms.Form):
                 raise forms.ValidationError('Użytkownik nie jest aktywny')
         return super(UserLoginForm, self).clean(*args, **kwargs)
 
-#####
-
 class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
@@ -31,21 +28,3 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Nauczyciel
         fields = ['numer_telefonu']
-
-# class ChangePasswordForm(forms.ModelForm):
-#     class Meta:
-#         model = CustomUser
-#         fields = ['password']
-
-# class ChangePasswordForm(forms.Form):
-#     old_password = forms.CharField(widget=forms.PasswordInput, label='Stare hasło')
-#     new_password = forms.CharField(widget=forms.PasswordInput, label='Nowe hasło')
-#     reenter_password = forms.CharField(widget=forms.PasswordInput, label='Powtórz hasło')
-#     def clean(self):
-#         new_password=self.cleaned_data.get('new_password')
-#         reenter_password=self.cleaned_data.get('reenter_password')
-        
-#         if new_password and new_password!=reenter_password:
-#             raise forms.ValidationError('Hasła nie są takie same')
-            
-#         return self.cleaned_data

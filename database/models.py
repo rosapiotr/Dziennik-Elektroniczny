@@ -1,5 +1,3 @@
-# from django.contrib.auth.models import User
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
@@ -33,27 +31,10 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
 
 class CustomUser(AbstractUser):
-    # username = models.CharField(max_length=10, unique=True)
-    # email = None
-
     is_student = models.BooleanField(default=False, verbose_name="Uczeń")
     is_teacher = models.BooleanField(default=False, verbose_name="Nauczyciel")
 
     objects = CustomUserManager()
-
-    # USERNAME_FIELD = 'username'
-    # REQUIRED_FIELDS = []
-
-    # objects = CustomUserManager()
-
-    # def __str__(self):
-    #     return self.username
-
-# Create your models here.
-# class User(AbstractUser):
-#     is_student = models.BooleanField(default=False)
-#     is_teacher = models.BooleanField(default=False)
-
 
 class Klasa(models.Model):
     id = models.CharField(db_column='ID', primary_key=True, max_length=10)  # Field name made lowercase.
@@ -79,7 +60,6 @@ class Nauczyciel(models.Model):
     pesel = models.BigIntegerField(db_column='PESEL')  # Field name made lowercase.
     adres = models.CharField(max_length=30)
     numer_telefonu = models.CharField(max_length=13)
-    # email = models.CharField(max_length=40)
 
     def __str__(self):
         return " ".join([self.imie, self.nazwisko])
@@ -140,9 +120,7 @@ class Uczen(models.Model):
     nazwisko = models.CharField(max_length=40)
     data_urodzenia = models.CharField(max_length=11)
     adres = models.CharField(max_length=30)
-    # email = models.CharField(max_length=40)
     klasa = models.OneToOneField(Klasa, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Klasa")
-    # klasa = models.CharField(max_length=10, blank=True, null=True)
 
     class Meta:
         managed = True

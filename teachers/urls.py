@@ -4,8 +4,6 @@ from . import views
 urlpatterns = [
     path('login/', views.login, name='teacher-login'),
     path('logout/', views.logout, name='teacher-logout'),
-    # path('dodaj_ogloszenie', views.AnnotationCreateView.as_view(), name='teacher-add-ann'),
-    # path('ogloszenie/<int:id>', views.DetailView.as_view(), name='teacher-ann-detail'),
     path('dodaj_ogloszenie/', views.add_ann, name='teacher-add-ann'),
     path('zapisz_ogloszenie/', views.post_ann, name='teacher-post-ann'),
     path('dodaj_ocene/', views.add_grade, name='teacher-add-grade'),
