@@ -139,7 +139,8 @@ def przedmioty(request):
     zajecia = Zajecia.objects.filter(id_klasy=uczen.klasa).order_by('godzina')
     przedmioty = []
     for z in zajecia:
-        przedmioty.append(z.id_przedmiotu)
+        if z.id_przedmiotu not in przedmioty:
+            przedmioty.append(z.id_przedmiotu)
 
     context = {
         "title": "Lista przedmiotów",

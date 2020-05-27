@@ -9,6 +9,26 @@
     <div class="row">
 
         <div class="col-2 border-left border-right">
+            Poniedziałek
+        </div>
+        <div class="col-2 border-left border-right">
+            Wtorek
+        </div>
+        <div class="col-2 border-left border-right">
+            Środa
+        </div>
+        <div class="col-2 border-left border-right">
+            Czwartek
+        </div>
+        <div class="col-2 border-left border-right">
+            Piątek
+        </div>
+    </div>
+    <hr>
+
+    <div class="row">
+
+        <div class="col-2 border-left border-right">
             {% for z in zajecia.poniedziałek %}
             <p>{{ z.id_przedmiotu.nazwa }}<br>{{ z.godzina }} {{ z.sala }}</p> <hr/>
             {% endfor %}
@@ -16,25 +36,25 @@
         
         <div class="col-2 border-left border-right">
             {% for z in zajecia.wtorek %}
-            <p>{{ z }}</p>
+            <p>{{ z.id_przedmiotu.nazwa }}<br>{{ z.godzina }} {{ z.sala }}</p> <hr/>
             {% endfor %}
         </div>
 
         <div class="col-2 border-left border-right">
             {% for z in zajecia.środa %}
-            <p>{{ z }}</p>
+            <p>{{ z.id_przedmiotu.nazwa }}<br>{{ z.godzina }} {{ z.sala }}</p> <hr/>
             {% endfor %}
         </div>
 
         <div class="col-2 border-left border-right">
             {% for z in zajecia.czwartek %}
-            <p>{{ z }}</p>
+            <p>{{ z.id_przedmiotu.nazwa }}<br>{{ z.godzina }} {{ z.sala }}</p> <hr/>
             {% endfor %}
         </div>
 
         <div class="col-2 border-left border-right">
             {% for z in zajecia.piątek %}
-            <p>{{ z }}</p>
+            <p>{{ z.id_przedmiotu.nazwa }}<br>{{ z.godzina }} {{ z.sala }}</p> <hr/>
             {% endfor %}
         </div>
 

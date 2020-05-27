@@ -120,7 +120,7 @@ class Uczen(models.Model):
     nazwisko = models.CharField(max_length=40)
     data_urodzenia = models.CharField(max_length=11)
     adres = models.CharField(max_length=30)
-    klasa = models.OneToOneField(Klasa, on_delete=models.SET_NULL, blank=True, null=True, verbose_name="Klasa")
+    klasa = models.ForeignKey(Klasa, on_delete=models.DO_NOTHING, blank=True, null=True, verbose_name="Klasa")
 
     class Meta:
         managed = True
@@ -128,7 +128,10 @@ class Uczen(models.Model):
         verbose_name_plural = "Uczniowie"
     
     def __str__(self):
-        return " ".join([self.imie, self.nazwisko, self.klasa.nazwa])
+        if self.klasa:
+            return " ".join([self.imie, self.nazwisko, self.klasa.nazwa])
+        else:
+            return " ".join([self.imie, self.nazwisko])
 
 
 class Zajecia(models.Model):

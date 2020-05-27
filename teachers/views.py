@@ -138,18 +138,39 @@ def post_grade(request):
 
 @teacher_required
 def plan(request):
-    # id = request.user.id
-    # nauczyciel = Nauczyciel.objects.filter(user_id=id)[0]
     nauczyciel = request.user.nauczyciel
     przedmioty = Przedmiot.objects.filter(id_nauczyciela=nauczyciel)
     zajecia = Zajecia.objects.filter(id_przedmiotu__in=przedmioty)
-    print(zajecia)
-    
-    context = {
-        'title': "Plan zajęć",
-        'zajecia': zajecia
-    }
+    # print(zajecia)
 
+    plan = {"poniedziałek": zajecia.filter(dzien__contains="Pon"),
+            "wtorek": zajecia.filter(dzien__contains="Wt"),
+            "środa": zajecia.filter(dzien__contains="Śr"),
+            "czwartek": zajecia.filter(dzien__contains="Cz"),
+            "piątek": zajecia.filter(dzien__contains="Pi"),
+            }
+    
+    plan2 = {"poniedziałek": [],
+            "wtorek": [],
+            "środa": [],
+            "czwartek": [],
+            "piątek": [],
+            }
+
+    for dzien in plan:
+        godzina = 8
+        for zajecia in plan[dzien]:
+            while zajecia.godzina.hour > godzina:
+                plan2[dzien].append("")
+                godzina += 2
+            plan2[dzien].append(zajecia)
+            godzina += 2
+
+    context = {
+        "title": "Plan zajęć",
+        "zajecia": plan2
+    }
+    
     return render(request, "teachers/plan.html", context)
 
 @teacher_required
